@@ -100,17 +100,19 @@ public class XCGBaseLogDestination: XCGLogDestinationProtocol, CustomDebugString
         }
 
         if showThreadName {
-            if NSThread.isMainThread() {
-                extendedDetails += "[main] "
-            }
-            else {
-                if let threadName = NSThread.currentThread().name where threadName != "" {
-                    extendedDetails += "[" + threadName + "] "
+            #if os(Linux) || os(FreeBSD)
+                extendedDetails += "[\(dispatch_queue_get_label(dispatch_get_current_queue()))] "
+            #else
+                if NSThread.isMainThread() {
+                    extendedDetails += "[main] "
+                } else {
+                    if let threadName = NSThread.currentThread().name where threadName != "" {
+                        extendedDetails += "[" + threadName + "] "
+                    } else {
+                        extendedDetails += "[" + String(format:"%p", NSThread.currentThread()) + "] "
+                    }
                 }
-                else {
-                    extendedDetails += "[" + String(format:"%p", NSThread.currentThread()) + "] "
-                }
-            }
+            #endif
         }
 
         if showFileName {
