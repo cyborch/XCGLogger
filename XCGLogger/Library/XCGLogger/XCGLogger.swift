@@ -12,6 +12,9 @@ import Foundation
     import AppKit
 #elseif os(iOS) || os(tvOS) || os(watchOS)
     import UIKit
+#elsif os(Linux) || os(FreeBSD)
+    import Glibc
+    import CDispatch
 #endif
 
 // MARK: - XCGLogDetails
